@@ -1,44 +1,33 @@
-import React from 'react';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-} from "react-router-dom";
-import Header from './components/Header';
-import Footer from './components/Footer';
-import Home from './views/Home'
-import About from './views/About'
-
+import React, { useState } from "react";
 
 function App() {
+  const [name, setName] = useState("");
+  const [gender, setGender] = useState("Unknown");
+
   return (
     <div>
-      <Router>
-        <div className="relative min-h-screen">
-
-          <div className="absolute bottom-0 w-full">
-            <Footer/>
-          </div>
-
-          <div className="h-16 mb-4">
-            <Header />
-          </div>
-
-          <div>
-            
-              <Switch>
-                <Route exact path="/">
-                  <Home />
-                </Route>
-
-                <Route path="/about">
-                  <About />
-                </Route>
-              </Switch>
-            
-          </div>
-        </div>
-      </Router>
+      <label htmlFor="name">Name</label>
+      <input
+        id="name"
+        type="text"
+        placeholder="name"
+        onChange={(e) => {
+          setName(e.target.value);
+        }}
+      />
+      <button
+        onClick={async () => {
+          const req = `https://api.genderize.io/?name=${name}`;
+          const response = await fetch(req);
+          const { gender } = await response.json();
+          console.log(gender);
+          setGender(gender);
+        }}
+      >
+        submit
+      </button>
+      <br />
+      <label>Your gender is {gender}</label>
     </div>
   );
 }
